@@ -225,6 +225,16 @@ export default function CatalogPage() {
             })
           )}
         </div>
+
+        {totalItems > 0 && (
+          <div className="fixed bottom-4 left-4 right-4 z-20">
+            <Link href="/cart">
+              <Button className="w-full h-14 text-lg font-semibold shadow-lg bg-white text-black hover:bg-gray-200">
+                Ver carrito ({totalItems} {totalItems === 1 ? "producto" : "productos"})
+              </Button>
+            </Link>
+          </div>
+        )}
       </div>
     </ProtectedRoute>
   )

@@ -217,7 +217,7 @@ export default function CartPage() {
               <span className="text-gray-400">Total ({totalItems} {totalItems === 1 ? 'producto' : 'productos'}):</span>
               <span className="text-xl font-bold text-white">${totalAmount.toLocaleString()}</span>
             </div>
-
+            <p className="text-sm text-gray-400">Retiro en el evento • Sin costo de envío</p>
             {/* Checkout Button */}
             <Button
               onClick={handleCheckout}
@@ -230,6 +230,7 @@ export default function CartPage() {
         </div>
 
         {/* Bottom Spacer */}
+        
         <div className="h-32"></div>
       </div>
     </ProtectedRoute>
