@@ -6,6 +6,8 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/auth-context'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Card } from '@/components/ui/card'
+import { ShoppingBag, MapPin, CreditCard, DollarSign, QrCode } from 'lucide-react'
 
 export default function AuthPage() {
   const { user } = useAuth()
@@ -32,6 +34,65 @@ export default function AuthPage() {
           <div className="text-center space-y-3">
             <h2 className="text-2xl font-bold text-white">¡Bienvenido!</h2>
             <p className="text-gray-400">Comprá merchandising oficial del evento de forma rápida y fácil</p>
+          </div>
+
+          <Card className="p-4 bg-black border-gray-900">
+            <h3 className="font-semibold text-white mb-4 text-center">¿Cómo funciona?</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  1
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-blue-400" />
+                  <span className="text-sm text-gray-300">Elegí tus productos favoritos</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  2
+                </div>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-green-400" />
+                  <span className="text-sm text-gray-300">Seleccioná dónde retirar</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  3
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    <CreditCard className="w-4 h-4 text-purple-400" />
+                    <DollarSign className="w-4 h-4 text-green-400" />
+                  </div>
+                  <span className="text-sm text-gray-300">Pagá con tarjeta o efectivo</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  4
+                </div>
+                <div className="flex items-center gap-2">
+                  <QrCode className="w-4 h-4 text-yellow-400" />
+                  <span className="text-sm text-gray-300">Retirá con tu QR</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="p-3 bg-green-900/20 border-green-800 text-center">
+              <p className="text-sm font-medium text-green-300">Sin filas</p>
+              <p className="text-xs text-green-400">Retiro rápido</p>
+            </Card>
+            <Card className="p-3 bg-blue-900/20 border-blue-800 text-center">
+              <p className="text-sm font-medium text-blue-300">Pago seguro</p>
+              <p className="text-xs text-blue-400">Mercado Pago</p>
+            </Card>
           </div>
 
           {/* Supabase Auth UI */}
@@ -103,7 +164,7 @@ export default function AuthPage() {
               }}
               providers={['google']}
               redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`}
-              showLinks={false}
+              showLinks={true}
               view="sign_in"
               localization={{
                 variables: {
@@ -113,7 +174,7 @@ export default function AuthPage() {
                     button_label: 'Iniciar sesión',
                     loading_button_label: 'Iniciando sesión...',
                     social_provider_text: 'Continuar con {{provider}}',
-                    link_text: '¿Ya tenés cuenta? Iniciá sesión',
+                    link_text: '¿No tenés cuenta? Creá una',
                   },
                   sign_up: {
                     email_label: 'Email',
@@ -121,7 +182,7 @@ export default function AuthPage() {
                     button_label: 'Crear cuenta',
                     loading_button_label: 'Creando cuenta...',
                     social_provider_text: 'Continuar con {{provider}}',
-                    link_text: '¿No tenés cuenta? Creá una',
+                    link_text: '¿Ya tenés cuenta? Iniciá sesión',
                   },
                   forgotten_password: {
                     email_label: 'Email',
