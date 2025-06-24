@@ -88,7 +88,7 @@ export default function CheckoutPage() {
         customer_email: customerEmail,
         qr_code: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         status: 'pending',
-        payment_method: paymentMethod === 'card' ? 'QR_MercadoPago' : 'Efectivo',
+        payment_method: paymentMethod,
         payment_validated: paymentMethod === 'card', // Cash payments need validation at pickup
         total_amount: totalAmount,
         sale_type: 'Online',
