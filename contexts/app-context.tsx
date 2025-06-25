@@ -57,6 +57,71 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user, isClient])
 
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const channel = supabase
+      .channel("orders_realtime_updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+          filter: `user_id=eq.${user.id}`,
+        },
+        async (payload: any) => {
+          if (!payload?.new?.id) {
+            console.warn("Payload missing ID:", payload);
+            return;
+          }
+
+          try {
+            const { data: updatedOrder, error } = await supabase
+              .from("orders")
+              .select(`
+                *,
+                items:order_items!order_items_order_id_fkey(*)
+              `)
+              .eq("id", payload.new.id)
+              .single();
+
+            if (error) throw error;
+
+            setOrders((prev) => {
+              switch (payload.eventType) {
+                case "INSERT":
+                  return [updatedOrder, ...prev];
+                case "UPDATE":
+                  return prev.map((order) =>
+                    order.id === updatedOrder.id ? updatedOrder : order
+                  );
+                case "DELETE":
+                  return prev.filter((order) => order.id !== payload.old.id);
+                default:
+                  return prev;
+              }
+            });
+          } catch (error) {
+            console.error("Error processing order update:", error);
+          }
+        }
+      )
+      .subscribe((status, err) => {
+        if (status === "SUBSCRIBED") {
+          console.log("Successfully subscribed to orders changes");
+        }
+        if (err) {
+          console.error("Subscription error:", err);
+        }
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
+
   // Set up real-time subscriptions
   useEffect(() => {
     if (!isClient || !user) return
@@ -207,6 +272,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           items:order_items!order_items_order_id_fkey(*)
         `)
         .order('created_at', { ascending: false })
+        .eq('user_id', user?.id)
 
       if (ordersError) throw ordersError
 

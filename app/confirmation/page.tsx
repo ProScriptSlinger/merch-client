@@ -25,7 +25,7 @@ export default function ConfirmationPage() {
   const router = useRouter()
   const { user } = useAuth()
   const { updateOrderStatus } = useApp()
-  
+
   const orderId = searchParams?.get("orderId")
   const paymentMethod = searchParams?.get("payment")
   const isCashPayment = paymentMethod === "cash"
@@ -52,8 +52,47 @@ export default function ConfirmationPage() {
       router.push('/catalog')
       return
     }
-
-    fetchOrder()
+    fetchOrder();
+    const channel = supabase
+      .channel("order_realtime_updates")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "orders",
+        },
+        async (payload: any) => {
+          console.log(
+            "Change detected for order:",
+            orderId,
+            "Payload:",
+            payload
+          );
+          try {
+            if (payload.new?.id == orderId || payload.old?.id == orderId) {
+              console.log("Our order changed:", payload);
+              await fetchOrder();
+            }
+          } catch (error) {
+            console.error("Error fetching updated profile:", error);
+          }
+        }
+      )
+      .subscribe((status, err) => {
+        if (status === "SUBSCRIBED") {
+          console.log(`Subscribed to changes for order ${orderId}`);
+        }
+        if (err) {
+          console.error("Subscription error:", err);
+        }
+      });
+      
+      
+      return () => {
+        supabase.removeChannel(channel);
+        console.log(`Unsubscribed from changes for order ${orderId}`);
+      };
   }, [orderId, router])
 
   useEffect(() => {
@@ -92,7 +131,7 @@ export default function ConfirmationPage() {
 
   const handleOrderExpired = async () => {
     setIsExpired(true)
-    
+
     // Update order status to cancelled
     if (orderId) {
       await updateOrderStatus(orderId, 'cancelled')
@@ -126,11 +165,11 @@ export default function ConfirmationPage() {
       // Create a canvas element to render the QR code
       const canvas = document.createElement('canvas')
       const svg = document.querySelector('.qr-code-svg') as SVGElement
-      
+
       if (svg) {
         const svgData = new XMLSerializer().serializeToString(svg)
         const img = new Image()
-        
+
         img.onload = () => {
           canvas.width = 256
           canvas.height = 256
@@ -139,7 +178,7 @@ export default function ConfirmationPage() {
             ctx.fillStyle = 'white'
             ctx.fillRect(0, 0, 256, 256)
             ctx.drawImage(img, 0, 0, 256, 256)
-            
+
             // Download the canvas as PNG
             canvas.toBlob((blob) => {
               if (blob) {
@@ -155,7 +194,7 @@ export default function ConfirmationPage() {
             })
           }
         }
-        
+
         img.src = 'data:image/svg+xml;base64,' + btoa(svgData)
       }
     }
@@ -168,6 +207,8 @@ export default function ConfirmationPage() {
   const handlePaymentUrlConfirm = () => {
     setShowPaymentUrl(false)
   }
+
+  console.log('loading ----->', loading)
 
   if (loading) {
     return (
@@ -204,15 +245,15 @@ export default function ConfirmationPage() {
           {/* Success Header */}
           <div className="text-center space-y-4 mb-8">
             <div className="w-16 h-16 bg-green-900/50 rounded-full flex items-center justify-center mx-auto border border-green-800">
-            {
-              order.status === 'pending' ? (
-                <Clock className="w-8 h-8 text-yellow-400" />
-              ) : order.status === 'waiting_payment' ? (
-                <Banknote className="w-8 h-8 text-yellow-400" />
-              ) : (
-                <Check className="w-8 h-8 text-green-400" />
-              )
-            }
+              {
+                order.status === 'pending' ? (
+                  <Clock className="w-8 h-8 text-yellow-400" />
+                ) : order.status === 'waiting_payment' ? (
+                  <Banknote className="w-8 h-8 text-yellow-400" />
+                ) : (
+                  <Check className="w-8 h-8 text-green-400" />
+                )
+              }
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">¡Listo!</h1>
@@ -335,6 +376,19 @@ export default function ConfirmationPage() {
               Guardar QR
             </Button>
 
+            {
+              order.status === 'waiting_payment' && (
+                <Button
+                  onClick={() => setShowPaymentUrl(true)}
+                  variant="outline"
+                  className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
+                >
+                  <Eye className="w-4 h-4 mr-2" />
+                  Pagar con tarjeta
+                </Button>
+              )
+            }
+
             <Button
               onClick={handleGoToCatalog}
               variant="outline"
@@ -343,18 +397,7 @@ export default function ConfirmationPage() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Seguir comprando
             </Button>
-            {
-              order.status === 'waiting_payment' && (    
-              <Button
-                onClick={() => setShowPaymentUrl(true)}
-                variant="outline"
-                className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
-              >
-                <Eye className="w-4 h-4 mr-2" />
-                Pagar con tarjeta
-              </Button>
-              )
-            }
+            
           </div>
 
           {/* Footer */}
