@@ -207,6 +207,7 @@ export type Database = {
           is_active: boolean
           created_at: string
           updated_at: string
+          operating_hours: string | null
         }
         Insert: {
           id?: string

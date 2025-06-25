@@ -163,8 +163,7 @@ export default function PickupLocationPage() {
                         <div className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-gray-500" />
                           <div>
-                            <p className="font-medium text-white">Horario</p>
-                            <p className="text-gray-400">Horario del evento</p>
+                            <p className="font-medium text-white">{stand?.operating_hours || 'Horario por confirmar'}</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-2">

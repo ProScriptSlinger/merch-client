@@ -222,7 +222,7 @@ export default function CartPage() {
             <Button
               onClick={handleCheckout}
               disabled={isCheckingOut}
-              className="w-full h-12 text-lg font-semibold bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full h-12 text-lg font-semibold bg-white hover:bg-white/80 text-black"
             >
               {isCheckingOut ? "Procesando..." : "Continuar al checkout"}
             </Button>
