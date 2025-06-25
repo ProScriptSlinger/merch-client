@@ -18,7 +18,7 @@ export default function CheckoutPage() {
   const { stands, createOrder } = useApp()
   const router = useRouter()
   const [isProcessing, setIsProcessing] = useState(false)
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>(null)
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>("card")
   const [showCashWarning, setShowCashWarning] = useState(false)
   const [selectedStand, setSelectedStand] = useState<any>(null)
   const [customerName, setCustomerName] = useState("")
@@ -87,7 +87,7 @@ export default function CheckoutPage() {
         customer_name: customerName,
         customer_email: customerEmail,
         qr_code: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        status: 'pending',
+        status: 'waiting_payment',
         payment_method: paymentMethod,
         payment_validated: paymentMethod === 'card', // Cash payments need validation at pickup
         total_amount: totalAmount,
@@ -96,7 +96,25 @@ export default function CheckoutPage() {
         delivery_qr_value: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       }
 
-      const { data: order, error } = await createOrder(orderData)
+      const { data: order, error } = await createOrder(orderData);
+
+      if(paymentMethod === "card") {
+        const res = await fetch("/api/payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            orderId: order.id,
+            chargeAmount: totalAmount,
+            userId: user?.id,
+            payer: {
+              email: customerName,
+              name: customerEmail,
+            },
+          }),
+        });
+      }
 
       if (error) {
         console.error('Error creating order:', error)
@@ -237,7 +255,7 @@ export default function CheckoutPage() {
                 <p className="font-medium text-white">{selectedStand.name}</p>
                 <p className="text-sm text-gray-400">
                   📍 {selectedStand.location || 'Ubicación por confirmar'}
-                  <br />🕐 Horario del evento
+                  <br />🕐 {selectedStand.operating_hours || 'Horario por confirmar'}
                   <br />
                   ⏱️ Tiempo de espera: 5-10 min
                   <br />📱 Presentá el QR que vas a recibir
@@ -276,7 +294,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* Cash Payment */}
-            <div
+            {/* <div
               onClick={() => handlePaymentMethodSelect("cash")}
               className={`p-4 border rounded-lg cursor-pointer transition-all ${
                 paymentMethod === "cash" ? "border-green-600 bg-green-900/20" : "border-gray-800 hover:border-gray-700"
@@ -297,7 +315,7 @@ export default function CheckoutPage() {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </Card>
 
           {/* Payment Button */}

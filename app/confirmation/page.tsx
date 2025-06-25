@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Check, Download, Share, ArrowLeft } from "lucide-react"
+import { Check, Download, Share, ArrowLeft, Clock, Banknote, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { CountdownTimer } from "@/components/countdown-timer"
@@ -13,6 +13,7 @@ import { useApp } from "@/contexts/app-context"
 import { supabase } from "@/lib/supabase"
 import type { Database } from "@/lib/supabase"
 import { QRCodeSVG } from "qrcode.react"
+import { PaymentUrl } from "@/components/payment-url"
 
 type Order = Database['public']['Tables']['orders']['Row'] & {
   items: Database['public']['Tables']['order_items']['Row'][]
@@ -32,6 +33,9 @@ export default function ConfirmationPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [isExpired, setIsExpired] = useState(false)
+  const [showPaymentUrl, setShowPaymentUrl] = useState(false)
+
+
 
   // Para efectivo, crear fecha de expiración (30 minutos desde ahora)
   const [expirationDate] = useState(() => {
@@ -52,6 +56,12 @@ export default function ConfirmationPage() {
     fetchOrder()
   }, [orderId, router])
 
+  useEffect(() => {
+    if (order?.transaction[0]?.payment_url) {
+      setShowPaymentUrl(true)
+    }
+  }, [order])
+
   const fetchOrder = async () => {
     try {
       const { data, error } = await supabase
@@ -59,7 +69,8 @@ export default function ConfirmationPage() {
         .select(`
           *,
           items:order_items(*),
-          stand:stands!orders_stand_id_fkey(*)
+          stand:stands!orders_stand_id_fkey(*),
+          transaction:transactions!transactions_order_id_fkey(*)
         `)
         .eq('id', orderId)
         .single()
@@ -150,6 +161,14 @@ export default function ConfirmationPage() {
     }
   }
 
+  const handlePaymentUrlClose = () => {
+    setShowPaymentUrl(false)
+  }
+
+  const handlePaymentUrlConfirm = () => {
+    setShowPaymentUrl(false)
+  }
+
   if (loading) {
     return (
       <ProtectedRoute>
@@ -185,13 +204,23 @@ export default function ConfirmationPage() {
           {/* Success Header */}
           <div className="text-center space-y-4 mb-8">
             <div className="w-16 h-16 bg-green-900/50 rounded-full flex items-center justify-center mx-auto border border-green-800">
-              <Check className="w-8 h-8 text-green-400" />
+            {
+              order.status === 'pending' ? (
+                <Clock className="w-8 h-8 text-yellow-400" />
+              ) : order.status === 'waiting_payment' ? (
+                <Banknote className="w-8 h-8 text-yellow-400" />
+              ) : (
+                <Check className="w-8 h-8 text-green-400" />
+              )
+            }
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">¡Listo!</h1>
               <p className="text-gray-400">{isCashPayment ? "Tu reserva fue confirmada" : "Tu compra fue confirmada"}</p>
             </div>
           </div>
+
+
 
           {/* Countdown Timer for Cash Payments */}
           {isCashPayment && expirationDate && !isExpired && (
@@ -267,7 +296,7 @@ export default function ConfirmationPage() {
               </p>
               <p className="text-xs text-gray-500 ml-4">{order.stand?.location || 'Ubicación por confirmar'}</p>
               <p>
-                <strong className="text-white">🕐 Horario:</strong> Horario del evento
+                <strong className="text-white">🕐 Horario:</strong> {order.stand?.operating_hours || 'Horario por confirmar'}
               </p>
               <p>
                 <strong className="text-white">⏱️ Tiempo estimado:</strong> 5-10 min de espera
@@ -314,6 +343,18 @@ export default function ConfirmationPage() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Seguir comprando
             </Button>
+            {
+              order.status === 'waiting_payment' && (    
+              <Button
+                onClick={() => setShowPaymentUrl(true)}
+                variant="outline"
+                className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Pagar con tarjeta
+              </Button>
+              )
+            }
           </div>
 
           {/* Footer */}
@@ -335,6 +376,12 @@ export default function ConfirmationPage() {
             onGoToCatalog={handleGoToCatalog}
           />
         )}
+        <PaymentUrl
+          paymentUrl={order.transaction[0]?.payment_url || ''}
+          isOpen={showPaymentUrl}
+          onClose={handlePaymentUrlClose}
+          onConfirm={handlePaymentUrlConfirm}
+        />
       </div>
     </ProtectedRoute>
   )

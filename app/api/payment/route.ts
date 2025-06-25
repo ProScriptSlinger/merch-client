@@ -11,7 +11,6 @@ export const POST = async (req: Request) => {
             {
                 user_id: userId,
                 amount: chargeAmount,
-                type: type || "charge",
                 status: "pending",
                 order_id: orderId || null
             }
@@ -72,8 +71,8 @@ export const POST = async (req: Request) => {
             paymentMethodId: '',
             installments: 1,
             dateCreated: new Date().toISOString(),
-            paymentUrl: mpResponse.init_point || ''
-            // paymentUrl: mpResponse.sandbox_init_point || '',
+            // paymentUrl: mpResponse.init_point || ''
+            paymentUrl: mpResponse.sandbox_init_point || '',
         };
 
         const { data: transactionUpdate, error: transactionError } = await supabase.from("transactions")

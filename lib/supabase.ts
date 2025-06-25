@@ -277,7 +277,7 @@ export type Database = {
           customer_name: string
           customer_email: string
           qr_code: string | null
-          status: 'pending' | 'delivered' | 'cancelled' | 'returned'
+          status: 'pending' | 'delivered' | 'cancelled' | 'returned' | 'waiting_payment'
           payment_method: 'POS' | 'Efectivo' | 'QR_MercadoPago' | 'Transferencia' | null
           payment_validated: boolean
           total_amount: number
@@ -292,6 +292,7 @@ export type Database = {
           refund_amount: number | null
           created_at: string
           updated_at: string
+          transaction: [any]
         }
         Insert: {
           id?: string

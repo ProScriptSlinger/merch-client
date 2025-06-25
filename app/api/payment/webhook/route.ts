@@ -100,32 +100,6 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        if (transactionUpdate.type != "order") {
-          const { data: user, error: fetchError } = await supabase
-            .from("profiles")
-            .select("balance")
-            .eq("id", transactionUpdate?.user_id)
-            .single();
-
-          const { data: userUpdate, error: userError } = await supabase
-            .from("profiles")
-            .update({
-              balance: user?.balance + Number(transactionUpdate?.amount),
-            })
-            .eq("id", transactionUpdate?.user_id)
-            .select()
-            .single();
-
-          fetch("/api/mails", {
-            method: "POST",
-            body: JSON.stringify({
-              email: userUpdate?.email,
-              type: "balance_updated",
-              balance: userUpdate?.balance,
-            }),
-          });
-        }
-
         if (transactionError) {
           console.error("Error updating transaction:", transactionError);
           return NextResponse.json(

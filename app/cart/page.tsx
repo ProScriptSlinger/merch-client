@@ -32,7 +32,7 @@ export default function CartPage() {
           .from('orders')
           .select('id')
           .eq('user_id', user.id)
-          .eq('status', 'pending')
+          .or('status.eq.waiting_payment,status.eq.pending')
           .limit(1)
 
         if (error) {
