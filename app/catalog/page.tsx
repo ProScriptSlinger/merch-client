@@ -172,8 +172,8 @@ export default function CatalogPage() {
                               onClick={() => setSelectedVariants({ ...selectedVariants, [product.id]: variant.id })}
                               className={`px-3 py-1 rounded-lg text-sm font-medium transition-colors ${
                                 selectedVariants[product.id] === variant.id
-                                  ? "bg-blue-600 text-white"
-                                  : "bg-gray-800 text-gray-300 hover:bg-gray-700"
+                                  ? "bg-white text-black"
+                                  : "bg-white/40 text-black hover:bg-white/60"
                               }`}
                             >
                               {variant.size} - ${variant.price.toLocaleString()}
@@ -213,7 +213,7 @@ export default function CatalogPage() {
                         <Button
                           onClick={() => handleAddToCart(product)}
                           disabled={!selectedVariants[product.id]}
-                          className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                          className="w-full bg-white hover:bg-white/80 text-black"
                         >
                           Agregar al carrito
                         </Button>
