@@ -1,8 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { PaymentWebhookData } from "@/utils/types";
-import { createClient } from "@/utils/supabase/client";
-
-const supabase = createClient();
+import { PaymentWebhookData } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
 
 // Common interface for payment data
 interface PaymentResponse {

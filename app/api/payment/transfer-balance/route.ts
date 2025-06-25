@@ -1,7 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/client";
-
-const supabase = createClient();
+import { supabase } from "@/lib/supabase";
 
 export const POST = async (req: Request) => {
   try {

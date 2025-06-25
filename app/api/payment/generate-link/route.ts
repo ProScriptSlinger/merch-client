@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/client";
+import { supabase } from "@/lib/supabase";
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(req: Request) {
-  const supabase = createClient();
   const { amount, note, userId } = await req.json();
 
   try {
