@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Check, Download, Share, ArrowLeft, Clock, Banknote, Eye } from "lucide-react"
+import { Check, Download, Share, ArrowLeft, Clock, Banknote, Eye, X, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { CountdownTimer } from "@/components/countdown-timer"
@@ -34,7 +34,7 @@ export default function ConfirmationPage() {
   const [loading, setLoading] = useState(true)
   const [isExpired, setIsExpired] = useState(false)
   const [showPaymentUrl, setShowPaymentUrl] = useState(false)
-
+  const [isCancellingOrder, setIsCancellingOrder] = useState(false)
 
 
   // Para efectivo, crear fecha de expiración (30 minutos desde ahora)
@@ -87,12 +87,12 @@ export default function ConfirmationPage() {
           console.error("Subscription error:", err);
         }
       });
-      
-      
-      return () => {
-        supabase.removeChannel(channel);
-        console.log(`Unsubscribed from changes for order ${orderId}`);
-      };
+
+
+    return () => {
+      supabase.removeChannel(channel);
+      console.log(`Unsubscribed from changes for order ${orderId}`);
+    };
   }, [orderId, router])
 
   useEffect(() => {
@@ -135,6 +135,15 @@ export default function ConfirmationPage() {
     // Update order status to cancelled
     if (orderId) {
       await updateOrderStatus(orderId, 'cancelled')
+    }
+  }
+
+  const handleCancelOrder = async () => {
+    if (orderId) {
+      setIsCancellingOrder(true)
+      await updateOrderStatus(orderId, 'cancelled')
+      setIsCancellingOrder(false)
+      router.push('/catalog')
     }
   }
 
@@ -207,9 +216,6 @@ export default function ConfirmationPage() {
   const handlePaymentUrlConfirm = () => {
     setShowPaymentUrl(false)
   }
-
-  console.log('loading ----->', loading)
-
   if (loading) {
     return (
       <ProtectedRoute>
@@ -256,8 +262,8 @@ export default function ConfirmationPage() {
               }
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">¡Listo!</h1>
-              <p className="text-gray-400">{isCashPayment ? "Tu reserva fue confirmada" : "Tu compra fue confirmada"}</p>
+              <h1 className="text-2xl font-bold text-white">{order.status === 'pending' ? "Pending" : order.status === 'waiting_payment' ? "Waiting Payment" : "Delivered"}</h1>
+              <p className="text-gray-400">{order.status == "waiting_payment" ? "Completá el pago para retirar tu compra" : order.status === 'pending' ? "Su pedido está siendo procesado" : "Tu compra fue confirmada"}</p>
             </div>
           </div>
 
@@ -271,38 +277,43 @@ export default function ConfirmationPage() {
           )}
 
           {/* QR Code Section */}
-          <Card className="p-6 text-center space-y-4 mb-6 bg-black border-gray-900">
-            <h2 className="text-lg font-semibold text-white">
-              {isCashPayment ? "QR para retiro y pago" : "QR para retiro"}
-            </h2>
+          {
+            order.status === 'pending' || order.status === 'waiting_payment' && (
+              <Card className="p-6 text-center space-y-4 mb-6 bg-black border-gray-900">
+                <h2 className="text-lg font-semibold text-white">
+                  {isCashPayment ? "QR para retiro y pago" : "QR para retiro"}
+                </h2>
 
-            <div className="w-48 h-48 mx-auto bg-white border-2 border-gray-900 rounded-xl flex items-center justify-center p-2">
-              {order.qr_code ? (
-                <QRCodeSVG
-                  value={order.qr_code}
-                  size={192}
-                  level="M"
-                  className="qr-code-svg"
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                />
-              ) : (
-                <div className="space-y-2">
-                  <div className="w-8 h-8 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="text-sm text-gray-500">Generando QR...</p>
+                <div className="w-48 h-48 mx-auto bg-white border-2 border-gray-900 rounded-xl flex items-center justify-center p-2">
+                  {order.qr_code ? (
+                    <QRCodeSVG
+                      value={order.qr_code}
+                      size={192}
+                      level="M"
+                      className="qr-code-svg"
+                      bgColor="#ffffff"
+                      fgColor="#000000"
+                    />
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="w-8 h-8 border-2 border-gray-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                      <p className="text-sm text-gray-500">Generando QR...</p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className="space-y-2">
-              <p className="font-semibold text-white">
-                {isCashPayment
-                  ? "Mostrá este QR en el stand para pagar y retirar"
-                  : "Mostrá este QR en el stand para retirar tu compra"}
-              </p>
-              <p className="text-sm text-gray-400">Pedido #{order.qr_code}</p>
-            </div>
-          </Card>
+                <div className="space-y-2">
+                  <p className="font-semibold text-white">
+                    {isCashPayment
+                      ? "Mostrá este QR en el stand para pagar y retirar"
+                      : "Mostrá este QR en el stand para retirar tu compra"}
+                  </p>
+                  <p className="text-sm text-gray-400">Pedido #{order.qr_code}</p>
+                </div>
+              </Card>
+            )
+          }
+
 
           {/* Order Details */}
           <Card className="p-4 space-y-3 mb-6 bg-black border-gray-900">
@@ -358,23 +369,32 @@ export default function ConfirmationPage() {
 
           {/* Action Buttons */}
           <div className="space-y-3">
-            <Button
-              onClick={shareOrder}
-              variant="outline"
-              className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
-            >
-              <Share className="w-4 h-4 mr-2" />
-              Compartir pedido
-            </Button>
+            {
+              order.status === 'waiting_payment' || order.status === 'pending' && (
+                <Button
+                  onClick={shareOrder}
+                  variant="outline"
+                  className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
+                >
+                  <Share className="w-4 h-4 mr-2" />
+                  Compartir pedido
+                </Button>
 
-            <Button
-              onClick={downloadQRCode}
-              variant="outline"
-              className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              Guardar QR
-            </Button>
+              )
+            }
+
+            {
+              order.status === 'pending' || order.status === 'waiting_payment' && (
+                <Button
+                  onClick={downloadQRCode}
+                  variant="outline"
+                  className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  Guardar QR
+                </Button>
+              )
+            }
 
             {
               order.status === 'waiting_payment' && (
@@ -397,7 +417,29 @@ export default function ConfirmationPage() {
               <ArrowLeft className="w-4 h-4 mr-2" />
               Seguir comprando
             </Button>
-            
+
+            {
+              order.status === 'waiting_payment' || order.status === 'pending' && (
+                <Button
+                  onClick={handleCancelOrder}
+                  variant="outline"
+                  className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
+                  disabled={isCancellingOrder}
+                >
+                  {
+                    isCancellingOrder ? (
+                      <Loader2 className="w-4 h-4 mr-2" />
+                    ) : (
+                      <X className="w-4 h-4 mr-2" />
+                    )
+                  }
+                  Cancelar pedido
+                </Button>
+              )
+            }
+
+
+
           </div>
 
           {/* Footer */}

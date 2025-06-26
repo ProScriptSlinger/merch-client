@@ -5,20 +5,20 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 
 export default function WelcomePage() {
-  const { user, loading } = useAuth()
+  const { user, isLoading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading) {
+    if (!isLoading) {
       if (user) {
         router.push('/catalog')
       } else {
         router.push('/auth')
       }
     }
-  }, [user, loading, router])
+  }, [user, isLoading, router])
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">

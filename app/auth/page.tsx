@@ -163,7 +163,7 @@ export default function AuthPage() {
                 },
               }}
               providers={['google']}
-              redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`}
+              redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/catalog`}
               showLinks={true}
               view="sign_in"
               localization={{
@@ -174,7 +174,7 @@ export default function AuthPage() {
                     button_label: 'Iniciar sesión',
                     loading_button_label: 'Iniciando sesión...',
                     social_provider_text: 'Continuar con {{provider}}',
-                    link_text: '¿No tenés cuenta? Creá una',
+                    link_text: '¿Ya tenés cuenta? Iniciá sesión',
                   },
                   sign_up: {
                     email_label: 'Email',
@@ -182,7 +182,7 @@ export default function AuthPage() {
                     button_label: 'Crear cuenta',
                     loading_button_label: 'Creando cuenta...',
                     social_provider_text: 'Continuar con {{provider}}',
-                    link_text: '¿Ya tenés cuenta? Iniciá sesión',
+                    link_text: '¿No tenés cuenta? Creá una',
                   },
                   forgotten_password: {
                     email_label: 'Email',

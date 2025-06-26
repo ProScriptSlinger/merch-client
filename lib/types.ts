@@ -12,3 +12,5 @@ export interface PaymentWebhookData {
         id: string;
     };
 }
+
+export type MailType = "sign_up" | "new_order" | "order_delivered" | "order_cancelled" | "order_delayed" | "balance_updated" | "reminder"

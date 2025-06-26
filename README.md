@@ -10,6 +10,7 @@ A Next.js e-commerce application for event merchandise with real-time inventory 
 - 📱 **Mobile-first Design**: Responsive UI optimized for mobile devices
 - 🔄 **Real-time Updates**: Live inventory and order status updates
 - 🎨 **Modern UI**: Built with Tailwind CSS and shadcn/ui components
+- 📧 **QR Code Email**: Automatic QR code generation and email sending for orders
 
 ## Tech Stack
 
@@ -134,4 +135,71 @@ The application uses Supabase's real-time subscriptions to provide live updates 
 
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
+
+## QR Code Email Feature
+
+The application now includes automatic QR code generation and email sending for orders. When a customer completes a purchase, they receive an email containing:
+
+- Order details and summary
+- QR code for pickup
+- Pickup location information
+- Important instructions
+
+### Setup
+
+1. **Resend Configuration**: Set up your Resend API key in your environment variables:
+   ```bash
+   RESEND_API_KEY=your_resend_api_key_here
+   ```
+
+2. **Email Templates**: The email templates are located in `components/EmailTemplate.tsx` and include:
+   - `NewOrderEmailTemplate`: Main template for order confirmations with QR codes
+   - Other templates for different email types
+
+3. **QR Code Generation**: QR codes are automatically generated using the `generateQRCode` utility function in `lib/utils.ts`
+
+### Email Features
+
+- **QR Code Display**: Embedded QR codes using `qrcode.react`
+- **Responsive Design**: Mobile-friendly email layout
+- **Order Details**: Complete order summary with items and prices
+- **Pickup Instructions**: Clear instructions for order pickup
+- **Error Handling**: Non-blocking email sending (order process continues even if email fails)
+
+### Customization
+
+You can customize the email templates by modifying the `NewOrderEmailTemplate` component. The template supports:
+
+- Custom styling and branding
+- Dynamic content (order details, QR codes, pickup locations)
+- Multiple languages (currently Spanish)
+- Responsive design for mobile devices
+
+## Getting Started
+
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+2. Set up environment variables:
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Environment Variables
+
+- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `RESEND_API_KEY`: Your Resend API key for email sending
+- `NEXT_PUBLIC_WEB_URL`: Your application URL
+
+## Database Setup
+
+Run the SQL scripts in the `scripts/` directory to set up your database schema. 

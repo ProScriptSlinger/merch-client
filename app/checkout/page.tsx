@@ -11,9 +11,11 @@ import { useAuth } from "@/contexts/auth-context"
 import { useCart } from "@/contexts/cart-context"
 import { useApp } from "@/contexts/app-context"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { generateQRCode } from '@/lib/utils'
 
 export default function CheckoutPage() {
-  const { user, userProfile } = useAuth()
+  const { user } = useAuth()
   const { items, totalAmount, clearCart } = useCart()
   const { stands, createOrder } = useApp()
   const router = useRouter()
@@ -21,16 +23,15 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState<"card" | "cash" | null>("card")
   const [showCashWarning, setShowCashWarning] = useState(false)
   const [selectedStand, setSelectedStand] = useState<any>(null)
-  const [customerName, setCustomerName] = useState("")
+  const [customerId, setCustomerId] = useState("")
   const [customerEmail, setCustomerEmail] = useState("")
 
   // Set default values from user profile
   useEffect(() => {
-    if (userProfile) {
-      setCustomerName(userProfile.full_name || "")
-      setCustomerEmail(userProfile.email || "")
+    if (user) {
+      setCustomerEmail(user.email || "")
     }
-  }, [userProfile])
+  }, [user])
 
   // Set default stand if available
   useEffect(() => {
@@ -74,7 +75,8 @@ export default function CheckoutPage() {
   }
 
   const handlePayment = async () => {
-    if (!customerName || !customerEmail || !selectedStand || !paymentMethod) {
+    if (!customerId || !customerEmail || !selectedStand || !paymentMethod) {
+      toast.error('Por favor, completa toda la información para continuar')
       return
     }
 
@@ -84,16 +86,15 @@ export default function CheckoutPage() {
       // Create order in database
       const orderData = {
         user_id: user?.id,
-        customer_name: customerName,
+        customer_id: customerId,
         customer_email: customerEmail,
-        qr_code: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        qr_code: generateQRCode(),
         status: 'waiting_payment',
         payment_method: paymentMethod,
         payment_validated: paymentMethod === 'card', // Cash payments need validation at pickup
         total_amount: totalAmount,
         sale_type: 'Online',
-        stand_id: selectedStand.id,
-        delivery_qr_value: `QR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        stand_id: selectedStand.id
       }
 
       const { data: order, error } = await createOrder(orderData);
@@ -109,11 +110,37 @@ export default function CheckoutPage() {
             chargeAmount: totalAmount,
             userId: user?.id,
             payer: {
-              email: customerName,
-              name: customerEmail,
+              email: customerEmail,
+              name: customerId,
             },
           }),
         });
+      }
+
+      // Send email with QR code (non-blocking)
+      try {
+        await fetch("/api/mails", {
+          method: "POST",
+          body: JSON.stringify({
+            email: customerEmail,
+            type: "new_order",
+            orderNumber: order.id,
+            qrCode: order.qr_code,
+            pickupLocation: selectedStand?.name,
+            totalAmount: totalAmount,
+            items: items.map(item => ({
+              name: item.name,
+              size: item.size,
+              quantity: item.quantity,
+              price: item.price * item.quantity
+            })),
+            firstName: customerId,
+            orderUrl: `${process.env.NEXT_PUBLIC_WEB_URL}/confirmation?orderId=${order.id}`
+          }),
+        });
+      } catch (emailError) {
+        console.error('Error sending email:', emailError);
+        // Don't block the order process if email fails
       }
 
       if (error) {
@@ -212,10 +239,10 @@ export default function CheckoutPage() {
                 </label>
                 <input
                   type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
+                  value={customerId}
+                  onChange={(e) => setCustomerId(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none"
-                  placeholder="Tu nombre completo"
+                  placeholder="Número de identificación nacional"
                   required
                 />
               </div>
@@ -322,7 +349,7 @@ export default function CheckoutPage() {
           <div className="space-y-4">
             <Button
               onClick={handlePayment}
-              disabled={isProcessing || !paymentMethod || !customerName || !customerEmail || !selectedStand}
+              disabled={isProcessing || !paymentMethod || !customerId || !customerEmail || !selectedStand}
               className="w-full h-14 text-lg font-semibold bg-white text-black hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isProcessing ? (
@@ -340,7 +367,7 @@ export default function CheckoutPage() {
               )}
             </Button>
             
-            {(!customerName || !customerEmail || !selectedStand) && (
+            {(!customerId || !customerEmail || !selectedStand) && (
               <p className="text-xs text-yellow-400 text-center">
                 Completa toda la información para continuar
               </p>

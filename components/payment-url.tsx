@@ -46,12 +46,12 @@ export function PaymentUrl({ paymentUrl, isOpen, onClose, onConfirm }: PaymentUr
 
           {/* Action Buttons */}
           <div className="space-y-3 pt-2">
-            <Button
+            {/* <Button
               onClick={onConfirm}
               className="w-full h-12 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold"
             >
               Ir a pagar
-            </Button>
+            </Button> */}
             <Button
               onClick={onClose}
               variant="outline"

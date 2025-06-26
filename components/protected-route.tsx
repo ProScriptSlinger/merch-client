@@ -10,7 +10,7 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-  const { user, loading } = useAuth()
+  const { user, isLoading  } = useAuth()
   const router = useRouter()
   const [isClient, setIsClient] = useState(false)
 
@@ -19,10 +19,10 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
   }, [])
 
   useEffect(() => {
-    if (isClient && !loading && !user) {
+    if (isClient && !isLoading && !user) {
       router.push('/auth')
     }
-  }, [user, loading, router, isClient])
+  }, [user, isLoading, router, isClient])
 
   // Don't render anything until we're on the client side
   if (!isClient) {
@@ -36,7 +36,7 @@ export default function ProtectedRoute({ children, fallback }: ProtectedRoutePro
     )
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       fallback || (
         <div className="min-h-screen bg-black flex items-center justify-center">

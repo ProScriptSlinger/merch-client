@@ -17,40 +17,40 @@ export default function CartPage() {
   const { user } = useAuth()
   const router = useRouter()
   const [isCheckingOut, setIsCheckingOut] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   // Check for pending orders on component mount
-  useEffect(() => {
-    const checkPendingOrders = async () => {
-      if (!user) {
-        setIsLoading(false)
-        return
-      }
+  // useEffect(() => {
+  //   const checkPendingOrders = async () => {
+  //     if (!user) {
+  //       setIsLoading(false)
+  //       return
+  //     }
 
-      try {
-        const { data: pendingOrders, error } = await supabase
-          .from('orders')
-          .select('id')
-          .eq('user_id', user.id)
-          .or('status.eq.waiting_payment,status.eq.pending')
-          .limit(1)
+  //     try {
+  //       const { data: pendingOrders, error } = await supabase
+  //         .from('orders')
+  //         .select('id')
+  //         .eq('user_id', user.id)
+  //         .or('status.eq.waiting_payment,status.eq.pending')
+  //         .limit(1)
 
-        if (error) {
-          console.error('Error checking pending orders:', error)
-        } else if (pendingOrders && pendingOrders.length > 0) {
-          // Redirect to confirmation page for the pending order
-          router.push(`/confirmation?orderId=${pendingOrders[0].id} `)
-          return
-        }
-      } catch (error) {
-        console.error('Error checking pending orders:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+  //       if (error) {
+  //         console.error('Error checking pending orders:', error)
+  //       } else if (pendingOrders && pendingOrders.length > 0) {
+  //         // Redirect to confirmation page for the pending order
+  //         router.push(`/confirmation?orderId=${pendingOrders[0].id} `)
+  //         return
+  //       }
+  //     } catch (error) {
+  //       console.error('Error checking pending orders:', error)
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
 
-    checkPendingOrders()
-  }, [user, router])
+  //   checkPendingOrders()
+  // }, [user, router])
 
   const handleCheckout = () => {
     setIsCheckingOut(true)
