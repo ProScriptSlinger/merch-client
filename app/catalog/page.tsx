@@ -76,8 +76,8 @@ export default function CatalogPage() {
     <ProtectedRoute>
       <div className="min-h-screen bg-black">
         {/* Header */}
-        <div className="sticky top-0 bg-black/95 backdrop-blur-sm border-b border-gray-900 z-10">
-          <div className="flex items-center justify-between p-4">
+        <div className="sticky top-0 bg-black/95 backdrop-blur-sm  z-10">
+          <div className="flex items-center justify-between p-4 border-b border-gray-900">
             <div className="flex items-center gap-3">
               <Link href="/">
                 <Button variant="ghost" size="sm" className="text-white hover:bg-gray-900">
@@ -114,7 +114,7 @@ export default function CatalogPage() {
               </Button>
             </div>
           </div>
-          <h1 className="text-xl font-bold text-white pl-8">Catálogo</h1>
+          <h1 className="text-xl font-bold text-white pl-8 pt-4">Catálogo</h1>
         </div>
 
         {/* Products Grid */}
