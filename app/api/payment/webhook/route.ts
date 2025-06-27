@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
             .from("orders")
             .update({
               status: "pending",
+              payment_validated: true,
               updated_at: new Date().toISOString(),
             })
             .eq("id", transactionUpdate?.order_id)

@@ -91,7 +91,7 @@ export default function CheckoutPage() {
         qr_code: generateQRCode(),
         status: 'waiting_payment',
         payment_method: paymentMethod,
-        payment_validated: paymentMethod === 'card', // Cash payments need validation at pickup
+        payment_validated: false,
         total_amount: totalAmount,
         sale_type: 'Online',
         stand_id: selectedStand.id
