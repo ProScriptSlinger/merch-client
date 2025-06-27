@@ -116,11 +116,12 @@ export default function CatalogPage() {
               </Button>
             </div>
           </div>
-          <h1 className="text-xl font-bold text-white pl-4 pt-4">Catálogo</h1>
+          
         </div>
 
         {/* Products Grid */}
         <div className="p-4 space-y-6 pb-[80px]">
+          <h1 className="text-xl font-bold text-white pl-4 pt-4">Catálogo</h1>
           {products.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-400">No hay productos disponibles</p>
