@@ -123,9 +123,15 @@ export default function OrdersPage() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-400">Status:</span>
+                    <span className="text-gray-400">Estado:</span>
                     <span className="text-white font-semibold">
                       {order.status === "pending" ? "Pendiente" : order.status === "waiting_payment" ? "Esperando pago" : order.status === "delivered" ? "Entregado" : order.status === "cancelled" ? "Cancelado" : order.status}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Validación :</span>
+                    <span className="text-white font-semibold">
+                      {order.payment_validated ? "Validado" : "Pendiente"}
                     </span>
                   </div>
                   <div className="flex justify-between">
