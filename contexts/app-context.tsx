@@ -78,31 +78,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           }
 
           try {
-            const { data: updatedOrder, error } = await supabase
-              .from("orders")
-              .select(`
-                *,
-                items:order_items!order_items_order_id_fkey(*)
-              `)
-              .eq("id", payload.new.id)
-              .single();
-
-            if (error) throw error;
-
-            setOrders((prev) => {
-              switch (payload.eventType) {
-                case "INSERT":
-                  return [updatedOrder, ...prev];
-                case "UPDATE":
-                  return prev.map((order) =>
-                    order.id === updatedOrder.id ? updatedOrder : order
-                  );
-                case "DELETE":
-                  return prev.filter((order) => order.id !== payload.old.id);
-                default:
-                  return prev;
-              }
-            });
+            refreshOrders()
           } catch (error) {
             console.error("Error processing order update:", error);
           }

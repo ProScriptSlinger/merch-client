@@ -9,6 +9,7 @@ import { ArrowLeft, QrCode, Download, Share, Package } from 'lucide-react'
 import Link from 'next/link'
 import ProtectedRoute from '@/components/protected-route'
 import { QRCodeSVG } from 'qrcode.react'
+import { useApp } from '@/contexts/app-context'
 
 type Order = {
   id: string
@@ -24,35 +25,8 @@ type Order = {
 
 export default function MyQRPage() {
   const { user } = useAuth()
-  const [orders, setOrders] = useState<Order[]>([])
+  const { orders } = useApp()
   const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    if (user) {
-      fetchOrders()
-    }
-  }, [user])
-
-  const fetchOrders = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('user_id', user?.id)
-        .not('qr_code', 'is', null)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching orders:', error)
-      } else {
-        setOrders(data || [])
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const downloadQRCode = (qrCode: string, orderId: string) => {
     // Create a canvas element to render the QR code
@@ -155,7 +129,7 @@ export default function MyQRPage() {
               </Link>
             </Card>
           ) : (
-            orders.map((order) => (
+            orders.filter((order) => order.status === "pending").map((order) => (
               <Card key={order.id} className="p-4 bg-black border-gray-900">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
@@ -172,24 +146,24 @@ export default function MyQRPage() {
                 <div className="text-center mb-4">
                   <div className="w-48 h-48 mx-auto bg-white border-2 border-gray-900 rounded-xl flex items-center justify-center p-2">
                     <QRCodeSVG
-                      value={order.qr_code}
+                      value={order.qr_code || ''}
                       size={192}
                       level="M"
                       className="qr-code-svg"
                       bgColor="#ffffff"
                       fgColor="#000000"
-                      data-qr={order.qr_code}
+                      data-qr={order.qr_code || ''}
                     />
                   </div>
                   <p className="text-sm text-gray-400 mt-2 font-mono">
-                    {order.qr_code}
+                    {order.qr_code || ''}
                   </p>
                 </div>
 
                 <div className="space-y-2 mb-4">
                   <div className="flex justify-between">
                     <span className="text-gray-400">Estado:</span>
-                    <span className="text-white">{order.status === "pending" ? "Pendiente" : order.status === "waiting_payment" ? "Esperando pago" : order.status === "paid" ? "Pagado" : order.status === "cancelled" ? "Cancelado" : order.status === "delayed" ? "Retrasado" : order.status}</span>
+                    <span className="text-white">{order.status === "pending" ? "Pendiente" : order.status === "waiting_payment" ? "Esperando pago" : order.status === "delivered" ? "Entregado" : order.status === "cancelled" ? "Cancelado"  : order.status}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-400">Total:</span>
@@ -204,7 +178,7 @@ export default function MyQRPage() {
                     variant="outline"
                     size="sm"
                     className="flex-1 border-gray-700 text-white hover:bg-gray-800"
-                    onClick={() => downloadQRCode(order.qr_code, order.id)}
+                    onClick={() => downloadQRCode(order.qr_code || '', order.id)}
                   >
                     <Download className="w-4 h-4 mr-2" />
                     Guardar
@@ -213,7 +187,7 @@ export default function MyQRPage() {
                     variant="outline"
                     size="sm"
                     className="flex-1 border-gray-700 text-white hover:bg-gray-800"
-                    onClick={() => shareQRCode(order.qr_code, order.id)}
+                    onClick={() => shareQRCode(order.qr_code || '', order.id)}
                   >
                     <Share className="w-4 h-4 mr-2" />
                     Compartir
