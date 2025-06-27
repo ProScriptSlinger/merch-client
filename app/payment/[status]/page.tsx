@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button"; // Replace with your button component
@@ -9,12 +9,13 @@ type PaymentStatus = "success" | "failure" | "pending" | "unknown";
 export default function PaymentPage() {
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const [status, setStatus] = useState<PaymentStatus>("unknown");
   const [isLoading, setIsLoading] = useState(true);
 
   // Extract status from URL (e.g., /payment/success?id=123)
   const paymentStatus = params?.status as string;
-  const paymentId = new URLSearchParams(window.location.search).get("id");
+  const paymentId = searchParams.get("id");
 
   useEffect(() => {
     if (!paymentStatus) {
@@ -116,7 +117,7 @@ export default function PaymentPage() {
 
         {status === "pending" && (
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => router.refresh()}
             className="mt-3 text-sm text-gray-400 hover:underline"
           >
             Refresh page
