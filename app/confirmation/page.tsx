@@ -384,7 +384,7 @@ export default function ConfirmationPage() {
             }
 
             {
-              order.status === 'pending' || order.status === 'waiting_payment' && (
+              order.status === 'pending'&& (
                 <Button
                   onClick={downloadQRCode}
                   variant="outline"
