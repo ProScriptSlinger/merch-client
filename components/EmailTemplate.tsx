@@ -45,7 +45,7 @@ export const SignupEmailTemplate: React.FC<
 export const NewOrderEmailTemplate: React.FC<
   Readonly<OrderEmailTemplateProps>
 > = ({ firstName = "", orderNumber, qrCode, qrImageData, pickupLocation, totalAmount, items, orderUrl }) => (
-  <a href={orderUrl} target="_blank" rel="noopener noreferrer">
+  
     <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h1 style={{ color: '#1f2937', fontSize: '24px', marginBottom: '10px' }}>Pedido Generado- Pago pendient</h1>
@@ -53,6 +53,12 @@ export const NewOrderEmailTemplate: React.FC<
         <p style={{ color: '#6b7280', fontSize: '16px' }}>Tu pedido fue generado correctamente, pero el pago aún no fue confirmado. Por favor, ingresá a la aplicación para completar el pago o verificar su estado.
         </p>
       </div>
+
+      <a href={orderUrl} target="_blank" rel="noopener noreferrer">
+        <button style={{ backgroundColor: '#1e40af', color: 'white', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer' }}>
+          Ver pedido
+        </button>
+      </a>
 
       <div style={{ backgroundColor: '#f9fafb', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
         <h2 style={{ color: '#1f2937', fontSize: '18px', marginBottom: '15px' }}>Detalles del pedido</h2>
@@ -150,7 +156,6 @@ export const NewOrderEmailTemplate: React.FC<
         <p>Gracias por tu compra. ¡Esperamos verte pronto!</p>
       </div>
     </div>
-  </a>
 );
 
 export const OrderDeliveredEmailTemplate: React.FC<

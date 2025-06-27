@@ -19,7 +19,7 @@ const getSubject = (type: MailType) => {
     case "sign_up":
       return " ¡Bienvenido a Payper App!";
     case "new_order":
-      return "Pedido listo";
+      return "Pedido Generado";
     default:
       return "Hola";
   }
