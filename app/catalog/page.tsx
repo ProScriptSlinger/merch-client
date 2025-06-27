@@ -78,12 +78,12 @@ export default function CatalogPage() {
         {/* Header */}
         <div className="sticky top-0 bg-black/95 backdrop-blur-sm  z-10">
           <div className="flex items-center justify-between p-4 border-b border-gray-900">
-            <div className="flex items-center gap-3">
-              <Link href="/">
+            <div className="flex items-center gap-3 pl-2">
+              {/* <Link href="/">
                 <Button variant="ghost" size="sm" className="text-white hover:bg-gray-900">
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
-              </Link>
+              </Link> */}
               <div>
                 <img src={"/icon.png"} width={120}/>
                 <p className="text-sm text-gray-400">KHEA TRAPICHEO</p>
@@ -114,7 +114,7 @@ export default function CatalogPage() {
               </Button>
             </div>
           </div>
-          <h1 className="text-xl font-bold text-white pl-8 pt-4">Catálogo</h1>
+          <h1 className="text-xl font-bold text-white pl-4 pt-4">Catálogo</h1>
         </div>
 
         {/* Products Grid */}
