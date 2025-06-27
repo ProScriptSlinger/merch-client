@@ -85,7 +85,7 @@ export default function CatalogPage() {
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold text-white">Catálogo</h1>
+                <img src={"/icon.png"} width={120}/>
                 <p className="text-sm text-gray-400">KHEA TRAPICHEO</p>
               </div>
             </div>
@@ -114,6 +114,7 @@ export default function CatalogPage() {
               </Button>
             </div>
           </div>
+          <h1 className="text-xl font-bold text-white pl-8">Catálogo</h1>
         </div>
 
         {/* Products Grid */}
