@@ -404,7 +404,7 @@ export default function ConfirmationPage() {
                   className="w-full h-12 border-gray-900 bg-black hover:bg-gray-900 text-white"
                 >
                   <Eye className="w-4 h-4 mr-2" />
-                  Pagar con tarjeta
+                  Continuar con el pago
                 </Button>
               )
             }

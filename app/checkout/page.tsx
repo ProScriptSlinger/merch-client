@@ -235,7 +235,7 @@ export default function CheckoutPage() {
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">
-                  Nombre completo
+                  DNI
                 </label>
                 <input
                   type="text"
@@ -309,8 +309,8 @@ export default function CheckoutPage() {
                   <CreditCard className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-white">Tarjeta de Crédito/Débito</p>
-                  <p className="text-sm text-gray-400">Mercado Pago • Visa, Mastercard</p>
+                  <p className="font-semibold text-white">Mercado Pago</p>
+                  <p className="text-sm text-gray-400">Mercado Pago – Visa, Mastercard</p>
                 </div>
                 {paymentMethod === "card" && (
                   <div className="w-4 h-4 bg-blue-600 rounded-full flex items-center justify-center">
@@ -357,7 +357,7 @@ export default function CheckoutPage() {
               ) : paymentMethod === "card" ? (
                 <>
                   <CreditCard className="w-5 h-5 mr-2" />
-                  Pagar con tarjeta
+                  Continuar con el pago
                 </>
               ) : (
                 <>
