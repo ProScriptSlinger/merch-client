@@ -25,8 +25,7 @@ type Order = {
 
 export default function MyQRPage() {
   const { user } = useAuth()
-  const { orders } = useApp()
-  const [loading, setLoading] = useState(true)
+  const { orders, loading } = useApp()
 
   const downloadQRCode = (qrCode: string, orderId: string) => {
     // Create a canvas element to render the QR code
@@ -117,7 +116,7 @@ export default function MyQRPage() {
         </div>
 
         <div className="p-4 space-y-4">
-          {orders.length === 0 ? (
+          {orders.filter((order) => order.status === "pending").length === 0 ? (
             <Card className="p-6 text-center bg-black border-gray-900">
               <QrCode className="w-12 h-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-white mb-2">No tenés códigos QR</h3>

@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ArrowLeft, Package, Clock, CheckCircle, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import ProtectedRoute from '@/components/protected-route'
+import { useApp } from '@/contexts/app-context'
 
 type Order = {
   id: string
@@ -23,34 +24,8 @@ type Order = {
 
 export default function OrdersPage() {
   const { user } = useAuth()
-  const [orders, setOrders] = useState<Order[]>([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    if (user) {
-      fetchOrders()
-    }
-  }, [user])
-
-  const fetchOrders = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching orders:', error)
-      } else {
-        setOrders(data || [])
-      }
-    } catch (error) {
-      console.error('Error:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const { orders, loading } = useApp()
 
   const getStatusIcon = (status: string) => {
     switch (status) {
