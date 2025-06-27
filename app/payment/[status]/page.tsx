@@ -60,7 +60,7 @@ export default function PaymentPage() {
 
   const statusConfig = {
     success: {
-      icon: <CheckCircle className="w-16 h-16 text-[#DBFF4C]" />,
+      icon: <CheckCircle className="w-16 h-16 text-white" />,
       title: "¡Listo, tu pedido está confirmado!",
       description: "Nos vemos en el evento. Mostrá tu QR para retirar tu merch de KHEA.",
       buttonText: "Ver pedido",
@@ -68,17 +68,17 @@ export default function PaymentPage() {
     },
     failure: {
       icon: <XCircle className="w-16 h-16 text-red-500" />,
-      title: "Payment Failed",
-      description: "We couldn't process your payment. Please try again.",
-      buttonText: "Retry Payment",
+      title: "¡Ups, tu pago no fue confirmado!",
+      description: "Por favor, intentá nuevamente.",
+      buttonText: "Intentar nuevamente",
       action: () => router.push("/orders"),
     },
     pending: {
       icon: <Clock className="w-16 h-16 text-yellow-500" />,
-      title: "Payment Pending",
+      title: "¡Tu pago está siendo procesado!",
       description:
-        "Your payment is being processed. We'll notify you when it's complete.",
-      buttonText: "Check Status",
+        "Te notificaremos cuando el pago sea confirmado.",
+      buttonText: "Verificar estado",
       action: () => verifyPaymentOnBackend(paymentId),
     },
     unknown: {
