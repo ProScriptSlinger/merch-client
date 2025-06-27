@@ -48,7 +48,7 @@ export const NewOrderEmailTemplate: React.FC<
   <a href={orderUrl} target="_blank" rel="noopener noreferrer">
     <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-        <h1 style={{ color: '#1f2937', fontSize: '24px', marginBottom: '10px' }}>Pedido generado</h1>
+        <h1 style={{ color: '#1f2937', fontSize: '24px', marginBottom: '10px' }}>Pedido Generado- Pago pendient</h1>
         <p style={{ color: '#6b7280', fontSize: '16px' }}>Pedido #{orderNumber}</p>
         <p style={{ color: '#6b7280', fontSize: '16px' }}>Tu pedido fue generado correctamente, pero el pago aún no fue confirmado. Por favor, ingresá a la aplicación para completar el pago o verificar su estado.
         </p>
