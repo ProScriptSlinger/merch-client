@@ -59,6 +59,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
 
   useEffect(() => {
+    console.log('user ------>', user);
     if (!user?.id) return;
 
     const channel = supabase
@@ -68,14 +69,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         {
           event: "*",
           schema: "public",
-          table: "orders",
-          filter: `user_id=eq.${user.id}`,
+          table: "orders"
         },
         async (payload: any) => {
           if (!payload?.new?.id) {
             console.warn("Payload missing ID:", payload);
             return;
           }
+
+          if(payload.new.user_id !== user.id) return;
 
           try {
             refreshOrders()
