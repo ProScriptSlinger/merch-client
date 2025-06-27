@@ -10,6 +10,7 @@ import ProtectedRoute from "@/components/protected-route"
 import { useAuth } from "@/contexts/auth-context"
 import { useApp } from "@/contexts/app-context"
 import { useCart } from "@/contexts/cart-context"
+import { ProductCarousel } from "@/components/ui/product-carousel"
 import type { Database } from "@/lib/supabase"
 
 type Product = Database['public']['Tables']['products']['Row'] & {
@@ -21,6 +22,7 @@ type Product = Database['public']['Tables']['products']['Row'] & {
 export default function CatalogPage() {
   const { user, signOut } = useAuth()
   const { products, loading } = useApp()
+  console.log("products ---->", products)
   const { addItem, totalItems } = useCart()
   const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: string }>({})
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
@@ -126,28 +128,25 @@ export default function CatalogPage() {
           ) : (
             products.map((product) => {
               const availableVariants = product.variants.filter(v => v.quantity > 0)
-              const primaryImage = product.images.find(img => img.is_primary)?.image_url || product.images[0]?.image_url || "/placeholder.svg"
               
               return (
                 <div key={product.id} className="bg-black rounded-2xl border border-gray-900 overflow-hidden">
-                  <div className="aspect-square relative bg-black">
-                    <Image
-                      src={primaryImage}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
+                  <div className="relative">
+                    <ProductCarousel 
+                      images={product.images}
+                      productName={product.name}
                     />
 
                     {/* Stock Badge */}
                     {availableVariants.length === 0 && (
-                      <div className="absolute top-3 right-3">
+                      <div className="absolute top-3 right-3 z-10">
                         <Badge className="bg-red-600 text-white">Sin stock</Badge>
                       </div>
                     )}
 
                     {/* Category Badge */}
                     {product.category && (
-                      <div className="absolute top-3 left-3">
+                      <div className="absolute top-3 left-3 z-10">
                         <Badge variant="secondary" className="bg-gray-800 text-gray-300">
                           {product.category.name}
                         </Badge>
