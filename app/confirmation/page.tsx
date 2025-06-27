@@ -278,7 +278,7 @@ export default function ConfirmationPage() {
 
           {/* QR Code Section */}
           {
-            order.status === 'pending' || order.status === 'waiting_payment' && (
+            order.status === 'pending'&& (
               <Card className="p-6 text-center space-y-4 mb-6 bg-black border-gray-900">
                 <h2 className="text-lg font-semibold text-white">
                   {isCashPayment ? "QR para retiro y pago" : "QR para retiro"}
