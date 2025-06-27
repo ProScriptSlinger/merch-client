@@ -11,7 +11,7 @@ import { MyInformationBanner } from "@/components/my-information-banner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Merch Store - Evento 2024",
+  title: "Merch Store - Evento 2025",
   description: "Tienda de merchandising para eventos",
   viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
     generator: 'v0.dev'
