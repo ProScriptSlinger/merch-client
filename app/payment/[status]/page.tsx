@@ -61,9 +61,9 @@ export default function PaymentPage() {
   const statusConfig = {
     success: {
       icon: <CheckCircle className="w-16 h-16 text-[#DBFF4C]" />,
-      title: "Payment Successful!",
-      description: "Your payment has been processed successfully.",
-      buttonText: "Check your order",
+      title: "¡Listo, tu pedido está confirmado!",
+      description: "Nos vemos en el evento. Mostrá tu QR para retirar tu merch de KHEA.",
+      buttonText: "Ver pedido",
       action: () => router.push("/my-qr"),
     },
     failure: {
