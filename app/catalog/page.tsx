@@ -218,7 +218,7 @@ export default function CatalogPage() {
                         {/* Quantity Selector */}
                         {selectedVariants[product.id] && (
                           <div className="flex items-center gap-3">
-                            <span className="text-sm text-gray-400">Cantidad:</span>
+                            {/* <span className="text-sm text-gray-400">Cantidad:</span> */}
                             <div className="flex items-center gap-2">
                               <Button
                                 variant="outline"
