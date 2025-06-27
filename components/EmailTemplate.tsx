@@ -46,41 +46,44 @@ export const NewOrderEmailTemplate: React.FC<
   Readonly<OrderEmailTemplateProps>
 > = ({ firstName = "", orderNumber, qrCode, qrImageData, pickupLocation, totalAmount, items, orderUrl }) => (
   <a href={orderUrl} target="_blank" rel="noopener noreferrer">
-  <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
-    <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-      <h1 style={{ color: '#1f2937', fontSize: '24px', marginBottom: '10px' }}>¡Tu pedido está listo!</h1>
-      <p style={{ color: '#6b7280', fontSize: '16px' }}>Pedido #{orderNumber}</p>
-    </div>
+    <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', padding: '20px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+        <h1 style={{ color: '#1f2937', fontSize: '24px', marginBottom: '10px' }}>¡Tu pedido está listo!</h1>
+        <p style={{ color: '#6b7280', fontSize: '16px' }}>Pedido #{orderNumber}</p>
+        <p style={{ color: '#6b7280', fontSize: '16px' }}>Tu pedido ha sido generado correctamente.
+          Por favor, ingresá a la aplicación para verificar si el pago fue aprobado.
+        </p>
+      </div>
 
-    <div style={{ backgroundColor: '#f9fafb', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
-      <h2 style={{ color: '#1f2937', fontSize: '18px', marginBottom: '15px' }}>Detalles del pedido</h2>
-      
-      {items && items.length > 0 && (
-        <div style={{ marginBottom: '15px' }}>
-          {items.map((item, index) => (
-            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-              <span style={{ color: '#374151' }}>
-                {item.name} {item.size && `(${item.size})`} x{item.quantity}
-              </span>
-              <span style={{ color: '#1f2937', fontWeight: 'bold' }}>
-                ${item.price.toLocaleString()}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-      
-      {totalAmount && (
-        <div style={{ borderTop: '1px solid #d1d5db', paddingTop: '15px', marginTop: '15px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px' }}>
-            <span style={{ color: '#1f2937' }}>Total:</span>
-            <span style={{ color: '#1f2937' }}>${totalAmount.toLocaleString()}</span>
+      <div style={{ backgroundColor: '#f9fafb', padding: '20px', borderRadius: '8px', marginBottom: '20px' }}>
+        <h2 style={{ color: '#1f2937', fontSize: '18px', marginBottom: '15px' }}>Detalles del pedido</h2>
+
+        {items && items.length > 0 && (
+          <div style={{ marginBottom: '15px' }}>
+            {items.map((item, index) => (
+              <div key={index} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                <span style={{ color: '#374151' }}>
+                  {item.name} {item.size && `(${item.size})`} x{item.quantity}
+                </span>
+                <span style={{ color: '#1f2937', fontWeight: 'bold' }}>
+                  ${item.price.toLocaleString()}
+                </span>
+              </div>
+            ))}
           </div>
-        </div>
-      )}
-    </div>
+        )}
 
-    {/* {qrCode && (
+        {totalAmount && (
+          <div style={{ borderTop: '1px solid #d1d5db', paddingTop: '15px', marginTop: '15px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '18px' }}>
+              <span style={{ color: '#1f2937' }}>Total:</span>
+              <span style={{ color: '#1f2937' }}>${totalAmount.toLocaleString()}</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* {qrCode && (
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <h2 style={{ color: '#1f2937', fontSize: '18px', marginBottom: '15px' }}>Tu código QR para retiro</h2>
         <div style={{ 
@@ -128,26 +131,26 @@ export const NewOrderEmailTemplate: React.FC<
       </div>
     )} */}
 
-    {pickupLocation && (
-      <div style={{ backgroundColor: '#eff6ff', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
-        <h3 style={{ color: '#1e40af', fontSize: '16px', marginBottom: '8px' }}>📍 Punto de retiro</h3>
-        <p style={{ color: '#1e40af', fontSize: '14px' }}>{pickupLocation}</p>
+      {pickupLocation && (
+        <div style={{ backgroundColor: '#eff6ff', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
+          <h3 style={{ color: '#1e40af', fontSize: '16px', marginBottom: '8px' }}>📍 Punto de retiro</h3>
+          <p style={{ color: '#1e40af', fontSize: '14px' }}>{pickupLocation}</p>
+        </div>
+      )}
+
+      <div style={{ backgroundColor: '#fef3c7', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
+        <h3 style={{ color: '#92400e', fontSize: '16px', marginBottom: '8px' }}>⚠️ Importante</h3>
+        <ul style={{ color: '#92400e', fontSize: '14px', margin: '0', paddingLeft: '20px' }}>
+          <li>Llevá este email o el código QR para retirar tu pedido</li>
+          <li>El código QR es único y no transferible</li>
+          <li>Si tenés problemas, contactanos en el stand</li>
+        </ul>
       </div>
-    )}
 
-    <div style={{ backgroundColor: '#fef3c7', padding: '15px', borderRadius: '8px', marginBottom: '20px' }}>
-      <h3 style={{ color: '#92400e', fontSize: '16px', marginBottom: '8px' }}>⚠️ Importante</h3>
-      <ul style={{ color: '#92400e', fontSize: '14px', margin: '0', paddingLeft: '20px' }}>
-        <li>Llevá este email o el código QR para retirar tu pedido</li>
-        <li>El código QR es único y no transferible</li>
-        <li>Si tenés problemas, contactanos en el stand</li>
-      </ul>
+      <div style={{ textAlign: 'center', color: '#6b7280', fontSize: '12px' }}>
+        <p>Gracias por tu compra. ¡Esperamos verte pronto!</p>
+      </div>
     </div>
-
-    <div style={{ textAlign: 'center', color: '#6b7280', fontSize: '12px' }}>
-      <p>Gracias por tu compra. ¡Esperamos verte pronto!</p>
-    </div>
-  </div>
   </a>
 );
 
