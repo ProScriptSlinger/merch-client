@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase"
 import type { Database } from "@/lib/supabase"
 import { QRCodeSVG } from "qrcode.react"
 import { PaymentUrl } from "@/components/payment-url"
+import { formatArgentineNumber } from "@/lib/utils"
 
 type Order = Database['public']['Tables']['orders']['Row'] & {
   items: Database['public']['Tables']['order_items']['Row'][]
@@ -329,7 +330,7 @@ export default function ConfirmationPage() {
               ))}
               <div className="pt-2 border-t border-gray-900 flex justify-between font-semibold">
                 <span className="text-white">Total</span>
-                <span className="text-white">${order.total_amount.toLocaleString()}</span>
+                <span className="text-white">${formatArgentineNumber(order.total_amount)}</span>
               </div>
               {isCashPayment && (
                 <div className="pt-2 border-t border-gray-900">

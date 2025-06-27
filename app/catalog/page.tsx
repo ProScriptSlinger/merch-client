@@ -12,6 +12,7 @@ import { useApp } from "@/contexts/app-context"
 import { useCart } from "@/contexts/cart-context"
 import { ProductCarousel } from "@/components/ui/product-carousel"
 import type { Database } from "@/lib/supabase"
+import { formatArgentineNumber } from "@/lib/utils"
 
 type Product = Database['public']['Tables']['products']['Row'] & {
   variants: Database['public']['Tables']['product_variants']['Row'][]
@@ -210,7 +211,7 @@ export default function CatalogPage() {
                                   : "bg-white/40 text-black hover:bg-white/60"
                               }`}
                             >
-                              {variant.size} - ${variant.price.toLocaleString()}
+                              {variant.size} - ${formatArgentineNumber(variant.price)}
                             </button>
                           ))}
                         </div>

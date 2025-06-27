@@ -11,6 +11,7 @@ import ProtectedRoute from "@/components/protected-route"
 import { useCart } from "@/contexts/cart-context"
 import { useAuth } from "@/contexts/auth-context"
 import { supabase } from "@/lib/supabase"
+import { formatArgentineNumber } from "@/lib/utils"
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, totalItems, totalAmount } = useCart()
@@ -215,7 +216,7 @@ export default function CartPage() {
             {/* Summary */}
             <div className="flex justify-between items-center">
               <span className="text-gray-400">Total ({totalItems} {totalItems === 1 ? 'producto' : 'productos'}):</span>
-              <span className="text-xl font-bold text-white">${totalAmount.toLocaleString()}</span>
+              <span className="text-xl font-bold text-white">${formatArgentineNumber(totalAmount)}</span>
             </div>
             <p className="text-sm text-gray-400">Retiro en el evento • Sin costo de envío</p>
             {/* Checkout Button */}

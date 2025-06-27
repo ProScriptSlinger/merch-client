@@ -12,7 +12,7 @@ import { useCart } from "@/contexts/cart-context"
 import { useApp } from "@/contexts/app-context"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { generateQRCode } from '@/lib/utils'
+import { formatArgentineNumber, generateQRCode } from '@/lib/utils'
 
 export default function CheckoutPage() {
   const { user } = useAuth()
@@ -209,7 +209,7 @@ export default function CheckoutPage() {
                       Talle {item.size} • Cantidad: {item.quantity}
                     </p>
                   </div>
-                  <p className="font-semibold text-white">${(item.price * item.quantity).toLocaleString()}</p>
+                  <p className="font-semibold text-white">${formatArgentineNumber(item.price * item.quantity)}</p>
                 </div>
               ))}
             </div>
@@ -217,7 +217,7 @@ export default function CheckoutPage() {
             <div className="border-t border-gray-900 pt-3">
               <div className="flex justify-between items-center text-lg font-bold">
                 <span className="text-white">Total</span>
-                <span className="text-white">${totalAmount.toLocaleString()}</span>
+                <span className="text-white">${formatArgentineNumber(totalAmount)}</span>
               </div>
               <p className="text-sm text-gray-400 mt-1">
                 {totalItems} {totalItems === 1 ? "producto" : "productos"} • Retiro en evento
