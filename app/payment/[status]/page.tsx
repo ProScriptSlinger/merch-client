@@ -63,14 +63,14 @@ export default function PaymentPage() {
       title: "Payment Successful!",
       description: "Your payment has been processed successfully.",
       buttonText: "Check your order",
-      action: () => router.push("/cart"),
+      action: () => router.push("/my-qr"),
     },
     failure: {
       icon: <XCircle className="w-16 h-16 text-red-500" />,
       title: "Payment Failed",
       description: "We couldn't process your payment. Please try again.",
       buttonText: "Retry Payment",
-      action: () => router.push("/cart"),
+      action: () => router.push("/orders"),
     },
     pending: {
       icon: <Clock className="w-16 h-16 text-yellow-500" />,
@@ -85,7 +85,7 @@ export default function PaymentPage() {
       title: "Unknown Status",
       description: "We couldn't determine your payment status.",
       buttonText: "Contact Support",
-      action: () => router.push("/menu"),
+      action: () => router.push("/catalog"),
     },
   };
 
@@ -93,7 +93,7 @@ export default function PaymentPage() {
 
   return (
     <div className="flex flex-col items-center justify-center p-4 h-[calc(100vh-9rem)]">
-      <div className="max-w-md w-full bg-white dark:bg-[#141415] rounded-lg shadow-lg p-8 text-center flex flex-col items-center">
+      <div className="max-w-md w-full bg-black dark:bg-[#141415] rounded-lg shadow-lg p-8 text-center flex flex-col items-center">
         {currentStatus.icon}
         <h1 className="text-2xl font-bold mt-4">{currentStatus.title}</h1>
         <p className="mt-2 text-gray-600 dark:text-gray-300">
