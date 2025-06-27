@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { Plus, Minus, ShoppingCart, ArrowLeft, LogOut } from "lucide-react"
+import { Plus, Minus, ShoppingCart, ArrowLeft, LogOut, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
@@ -26,6 +26,7 @@ export default function CatalogPage() {
   const { addItem, totalItems } = useCart()
   const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: string }>({})
   const [quantities, setQuantities] = useState<{ [key: string]: number }>({})
+  const [expandedDescriptions, setExpandedDescriptions] = useState<{ [key: string]: boolean }>({})
 
   const handleAddToCart = (product: Product) => {
     const selectedVariantId = selectedVariants[product.id]
@@ -55,6 +56,13 @@ export default function CatalogPage() {
   const updateQuantity = (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return
     setQuantities({ ...quantities, [productId]: newQuantity })
+  }
+
+  const toggleDescription = (productId: string) => {
+    setExpandedDescriptions(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }))
   }
 
   const handleSignOut = async () => {
@@ -119,9 +127,10 @@ export default function CatalogPage() {
           
         </div>
 
+        <h1 className="text-xl font-bold text-white pl-4 pt-4">Catálogo</h1>
+
         {/* Products Grid */}
-        <div className="p-4 space-y-6 pb-[80px]">
-          <h1 className="text-xl font-bold text-white pl-4 pt-4">Catálogo</h1>
+        <div className="p-4 pb-[80px] grid grid-cols-2 gap-4">
           {products.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-400">No hay productos disponibles</p>
@@ -129,9 +138,15 @@ export default function CatalogPage() {
           ) : (
             products.map((product) => {
               const availableVariants = product.variants.filter(v => v.quantity > 0)
+              const isDescriptionExpanded = expandedDescriptions[product.id]
+              const description = product.description || ""
+              const shouldShowReadMore = description.length > 80
+              const displayDescription = shouldShowReadMore && !isDescriptionExpanded 
+                ? description.substring(0, 40) + "..."
+                : description
               
               return (
-                <div key={product.id} className="bg-black rounded-2xl border border-gray-900 overflow-hidden">
+                <div key={product.id} className="bg-black rounded-2xl border border-gray-900 overflow-hidden ">
                   <div className="relative">
                     <ProductCarousel 
                       images={product.images}
@@ -140,14 +155,14 @@ export default function CatalogPage() {
 
                     {/* Stock Badge */}
                     {availableVariants.length === 0 && (
-                      <div className="absolute top-3 right-3 z-10">
+                      <div className="absolute top-3 right-3 z-0">
                         <Badge className="bg-red-600 text-white">Sin stock</Badge>
                       </div>
                     )}
 
                     {/* Category Badge */}
                     {product.category && (
-                      <div className="absolute top-3 left-3 z-10">
+                      <div className="absolute top-3 left-3 z-0">
                         <Badge variant="secondary" className="bg-gray-800 text-gray-300">
                           {product.category.name}
                         </Badge>
@@ -158,8 +173,26 @@ export default function CatalogPage() {
                   <div className="p-4 space-y-4">
                     <div>
                       <h3 className="text-lg font-semibold text-white">{product.name}</h3>
-                      {product.description && (
-                        <p className="text-sm text-gray-400 mt-1">{product.description}</p>
+                      {description && (
+                        <div className="mt-1">
+                          <p className="text-sm text-gray-400">{displayDescription}</p>
+                          {shouldShowReadMore && (
+                            <button
+                              onClick={() => toggleDescription(product.id)}
+                              className="text-xs text-blue-400 hover:text-blue-300 mt-1 flex items-center gap-1"
+                            >
+                              {isDescriptionExpanded ? (
+                                <>
+                                  Leer menos <ChevronUp className="w-3 h-3" />
+                                </>
+                              ) : (
+                                <>
+                                  Leer más <ChevronDown className="w-3 h-3" />
+                                </>
+                              )}
+                            </button>
+                          )}
+                        </div>
                       )}
                     </div>
 
