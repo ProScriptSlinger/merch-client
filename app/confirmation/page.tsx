@@ -96,7 +96,7 @@ export default function ConfirmationPage() {
   }, [orderId, router])
 
   useEffect(() => {
-    if (order?.transaction[0]?.payment_url) {
+    if (order?.transaction[0]?.payment_url && order.status === 'waiting_payment') {
       setShowPaymentUrl(true)
     }
   }, [order])
@@ -263,7 +263,7 @@ export default function ConfirmationPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">{order.status === 'pending' ? "Pending" : order.status === 'waiting_payment' ? "Waiting Payment" : "Delivered"}</h1>
-              <p className="text-gray-400">{order.status == "waiting_payment" ? "Completá el pago para retirar tu compra" : order.status === 'pending' ? "Su pedido está siendo procesado" : "Tu compra fue confirmada"}</p>
+              <p className="text-gray-400">{order.status == "waiting_payment" ? "Tu pedido está siendo procesado. El pago está pendiente de confirmación." : order.status === 'pending' ? "Tu pedido fue validado correctamente. Mostrá este QR en el stand para retirar tu compra.”" : "Tu compra fue confirmada"}</p>
             </div>
           </div>
 
