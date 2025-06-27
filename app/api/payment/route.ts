@@ -48,9 +48,11 @@ export const POST = async (req: Request) => {
                 pending: `${process.env.NEXT_PUBLIC_WEB_URL}/payment/pending`,
             },
             // Remove auto_return as it's causing issues
-            notification_url: `${process.env.WEB_URL}/api/payment/webhook`,
+            notification_url: `${process.env.NEXT_PUBLIC_WEB_URL}/api/payment/webhook`,
             statement_descriptor: 'Papel Restaurant'
         };
+
+        console.log('preference data ------>', preferenceData);
 
         const response = await fetch('https://api.mercadopago.com/checkout/preferences', {
             method: 'POST',

@@ -270,11 +270,11 @@ export default function CheckoutPage() {
                 <MapPin className="w-4 h-4 text-green-400" />
                 <h3 className="font-semibold text-white">Punto de retiro</h3>
               </div>
-              <Link href="/pickup-location">
+              {/* <Link href="/pickup-location">
                 <Button variant="ghost" size="sm" className="text-blue-400 hover:text-blue-300 hover:bg-blue-900/20">
                   Cambiar
                 </Button>
-              </Link>
+              </Link> */}
             </div>
             
             {selectedStand ? (
