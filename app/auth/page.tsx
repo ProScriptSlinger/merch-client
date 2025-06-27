@@ -68,7 +68,7 @@ export default function AuthPage() {
                     <CreditCard className="w-4 h-4 text-purple-400" />
                     <DollarSign className="w-4 h-4 text-green-400" />
                   </div>
-                  <span className="text-sm text-gray-300">Pagá con tarjeta o efectivo</span>
+                  <span className="text-sm text-gray-300">Pagá con Mercado Pago</span>
                 </div>
               </div>
 
@@ -93,6 +93,10 @@ export default function AuthPage() {
               <p className="text-sm font-medium text-blue-300">Pago seguro</p>
               <p className="text-xs text-blue-400">Mercado Pago</p>
             </Card>
+          </div>
+
+          <div className="text-center space-y-3">
+            <p className="text-gray-400">Con tu registro, participás del sorteo por un meet and greet</p>
           </div>
 
           {/* Supabase Auth UI */}
